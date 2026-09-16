@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import { Home, Settings, Editor, Article, Profile, Auth } from './pages'
+import { Home, Settings, Editor, Article, Profile, Auth, Health } from './pages'
 import { AuthRoute, GuestRoute, Navbar } from './components'
 
 import './App.css'
@@ -13,6 +13,7 @@ function App() {
       </header>
       <main>
         <Routes>
+          <Route path="/health" element={<Health />} />
           <Route path="/" element={<Home />} />
           <GuestRoute path="/register" element={<Auth key="register" />} />
           <GuestRoute path="/login" element={<Auth key="login" />} />

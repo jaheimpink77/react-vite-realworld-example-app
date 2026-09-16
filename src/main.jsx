@@ -7,9 +7,9 @@ import axios from 'axios'
 import App from './App'
 import makeServer from './server'
 
-if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = 'https://api.realworld.io/api'
-}
+// Set VITE_API_URL to point at the Django backend (e.g. http://localhost:8000/api locally,
+// or the ALB/ECS service URL in production). Falls back to the public demo API otherwise.
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://api.realworld.io/api'
 
 const defaultQueryFn = async ({ queryKey }) => {
   const { data } = await axios.get(queryKey[0], { params: queryKey[1] })
@@ -34,7 +34,8 @@ if (window.Cypress && process.env.NODE_ENV === 'test') {
     },
   })
   cyServer.logging = false
-} else if(process.env.NODE_ENV === 'development') {
+} else if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_API_URL) {
+  // Only run the in-browser mock API when no real backend URL is configured.
   makeServer({ environment: 'development' })
 }
 
