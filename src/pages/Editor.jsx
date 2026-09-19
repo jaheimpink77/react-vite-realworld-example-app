@@ -25,10 +25,14 @@ function Editor() {
 
       navigate(`/article/${data?.article?.slug}`)
     } catch (error) {
-      const { status, data } = error.response
+      const { status, data } = error.response ?? {}
 
       if (status === 422) {
         setErrors(data.errors)
+      } else if (status === 401) {
+        setErrors({ body: ['session expired - please sign in again'] })
+      } else {
+        setErrors({ body: data?.errors?.body ?? ['could not be published'] })
       }
     }
   }

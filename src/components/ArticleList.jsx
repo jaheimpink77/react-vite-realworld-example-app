@@ -18,19 +18,20 @@ const initialFilters = { author: null, favorited: null, tag: null, offset: null,
 const limit = 10
 
 function ArticleList({ filters = initialFilters }) {
-  const [offset, setOffset] = React.useState(0)
-  const { data, isFetching, isError, isSuccess } = useArticlesQuery({ filters: { ...filters, offset } })
-  const pages = Math.ceil(data.articlesCount / limit)
+  const [page, setPage] = React.useState(0)
+  const { data, isFetching, isError } = useArticlesQuery({ filters: { ...filters, offset: page * limit } })
 
   useDeepCompareEffect(() => {
     if (!isNil(filters.offset)) {
-      setOffset(filters.offset)
+      setPage(filters.offset)
     }
   }, [filters])
 
   if (isFetching) return <p className="article-preview">Loading articles...</p>
   if (isError) return <p className="article-preview">Loading articles failed :(</p>
-  if (isSuccess && isEmpty(data?.articles)) return <p className="article-preview">No articles are here... yet.</p>
+  if (isEmpty(data?.articles)) return <p className="article-preview">No articles are here... yet.</p>
+
+  const pages = Math.ceil(data.articlesCount / limit)
 
   return (
     <>
@@ -41,8 +42,8 @@ function ArticleList({ filters = initialFilters }) {
         <nav>
           <ul className="pagination">
             {Array.from({ length: pages }, (_, i) => (
-              <li className={offset === i ? 'page-item active' : 'page-item'} key={i}>
-                <button type="button" className="page-link" onClick={() => setOffset(i)}>
+              <li className={page === i ? 'page-item active' : 'page-item'} key={i}>
+                <button type="button" className="page-link" onClick={() => setPage(i)}>
                   {i + 1}
                 </button>
               </li>

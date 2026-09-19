@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { Home, Settings, Editor, Article, Profile, Auth, Health } from './pages'
 import { AuthRoute, GuestRoute, Navbar } from './components'
 
+// Conduit Bootstrap theme, vendored from the now-dead demo.productionready.io CDN
+// so styling does not depend on an external host at runtime.
+import './conduit.css'
 import './App.css'
 
 function App() {

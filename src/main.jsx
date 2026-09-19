@@ -8,8 +8,13 @@ import App from './App'
 import makeServer from './server'
 
 // Set VITE_API_URL to point at the Django backend (e.g. http://localhost:8000/api locally,
-// or the ALB/ECS service URL in production). Falls back to the public demo API otherwise.
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://api.realworld.io/api'
+// or the ALB/ECS service URL in production). Left unset in dev, requests stay relative so the
+// Mirage mock server below can intercept them; in production we fall back to the demo API.
+if (import.meta.env.VITE_API_URL) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL
+} else if (process.env.NODE_ENV === 'production') {
+  axios.defaults.baseURL = 'https://api.realworld.io/api'
+}
 
 const defaultQueryFn = async ({ queryKey }) => {
   const { data } = await axios.get(queryKey[0], { params: queryKey[1] })
